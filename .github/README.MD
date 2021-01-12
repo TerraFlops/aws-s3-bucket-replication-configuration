@@ -17,6 +17,6 @@ module "s3_replication_policy" {
 
 The following JSON statements are output from the module
 
-* replication_source_assume_role_policy
-* replication_source_policy
-* replication_destination_policy
+* replication_source_iam_role_assume_policy
+* replication_source_iam_role_policy
+* replication_destination_bucket_policy

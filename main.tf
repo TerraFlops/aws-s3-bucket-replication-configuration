@@ -1,5 +1,5 @@
 # Create policy document allowing S3 service to assume the IAM role
-data "aws_iam_policy_document" "replication_source_assume_role_policy" {
+data "aws_iam_policy_document" "replication_source_iam_role_assume_policy" {
   version = "2012-10-17"
   statement {
     effect = "Allow"
@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "replication_source_assume_role_policy" {
   }
 }
 
-data "aws_iam_policy_document" "replication_source_iam_role" {
+data "aws_iam_policy_document" "replication_source_iam_role_policy" {
   version = "2012-10-17"
   statement {
     effect = "Allow"
@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "replication_source_iam_role" {
   }
 }
 
-data "aws_iam_policy_document" "replication_destination" {
+data "aws_iam_policy_document" "replication_destination_bucket_policy" {
   version = "2012-10-17"
   statement {
     effect = "Allow"
