@@ -1,7 +1,7 @@
 locals {
   source_s3_service_root_arn = "arn:aws:iam::${var.source_aws_account_id}:root"
   source_bucket_arn = "arn:aws:s3:::${var.source_bucket_name}"
-  destination_bucket_arns = toset([for destination_bucket_name, storage_class in var.destination_bucket_names: "arn:aws:s3:::${destination_bucket_name}"])
+  destination_bucket_arns = toset([for destination in var.destinations: "arn:aws:s3:::${destination["bucket_name"]}"])
 }
 
 # Create policy document allowing S3 service to assume the IAM role
