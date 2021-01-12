@@ -1,3 +1,8 @@
+variable "name" {
+  type = string
+  description = "Name for the replication rule"
+}
+
 variable "enabled" {
   type = bool
   description = "Boolean flag to enable/disable replication, defaults to true"
@@ -7,11 +12,6 @@ variable "enabled" {
 variable "source_aws_account_id" {
   type = string
   description = "The AWS account ID where the source bucket is located"
-}
-
-variable "source_iam_role_name" {
-  type = string
-  description = "If specified a source IAM role will be created with this name"
 }
 
 variable "source_bucket_name" {

@@ -1,3 +1,8 @@
+output "name" {
+  description = "Name for the replication rule"
+  value = var.name
+}
+
 output "rule" {
   description = "Map that can be used to populate S3 bucket replication configuration rule block"
   value = {

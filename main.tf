@@ -94,13 +94,13 @@ data "aws_iam_policy_document" "destination_bucket_policy" {
 
 # If a role name is supplied, create IAM role for replication
 resource "aws_iam_role" "source_iam_role" {
-  name = var.source_iam_role_name
+  name = "${var.name}Role"
   assume_role_policy = data.aws_iam_policy_document.source_iam_role_assume_policy.json
 }
 
 # If a role was created, attach the policy to it
 resource "aws_iam_role_policy" "source_iam_role" {
-  name = "${var.source_iam_role_name}Policy"
+  name = "${var.name}Policy"
   policy = data.aws_iam_policy_document.source_iam_role_policy.json
   role = aws_iam_role.source_iam_role.name
 }
