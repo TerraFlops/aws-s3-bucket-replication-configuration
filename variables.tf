@@ -14,7 +14,19 @@ variable "source_bucket_name" {
   description = "The replication source bucket name"
 }
 
+variable "source_bucket_prefix" {
+  type = string
+  description = "Optional prefix for source bucket replication"
+  default = ""
+}
+
 variable "destination_bucket_names" {
   type = set(string)
   description = "Set of destination bucket names to this the source will be replicated"
+}
+
+variable "destination_bucket_storage_class" {
+  type = string
+  description = "Override for destination bucket storage class, defaults to STANDARD"
+  default = "STANDARD"
 }
