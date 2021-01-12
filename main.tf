@@ -1,5 +1,5 @@
 # Create policy document allowing S3 service to assume the IAM role
-data "aws_iam_policy_document" "replication_source_iam_role_assume_policy" {
+data "aws_iam_policy_document" "source_iam_role_assume_policy" {
   version = "2012-10-17"
   statement {
     effect = "Allow"
@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "replication_source_iam_role_assume_policy" {
   }
 }
 
-data "aws_iam_policy_document" "replication_source_iam_role_policy" {
+data "aws_iam_policy_document" "source_iam_role_policy" {
   version = "2012-10-17"
   statement {
     effect = "Allow"
@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "replication_source_iam_role_policy" {
   }
 }
 
-data "aws_iam_policy_document" "replication_destination_bucket_policy" {
+data "aws_iam_policy_document" "destination_bucket_policy" {
   version = "2012-10-17"
   statement {
     effect = "Allow"
@@ -92,13 +92,13 @@ data "aws_iam_policy_document" "replication_destination_bucket_policy" {
 resource "aws_iam_role" "source_iam_role" {
   count = var.source_iam_role_name == null ? 0 : 1
   name = var.source_iam_role_name
-  assume_role_policy = data.aws_iam_policy_document.replication_source_iam_role_assume_policy
+  assume_role_policy = data.aws_iam_policy_document.source_iam_role_assume_policy
 }
 
 # If a role was created, attach the policy to it
 resource "aws_iam_role_policy" "source_iam_role" {
   count = var.source_iam_role_name == null ? 0 : 1
   name = "${var.source_iam_role_name}Policy"
-  policy = data.aws_iam_policy_document.replication_source_iam_role_policy.json
+  policy = data.aws_iam_policy_document.source_iam_role_policy.json
   role = aws_iam_role.source_iam_role[0].name
 }
