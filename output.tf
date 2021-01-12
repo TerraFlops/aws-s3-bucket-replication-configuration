@@ -1,12 +1,12 @@
-output "destinations" {
-  description = "Map that can be used to populate S3 bucket replication configuration destinations block"
+output "rule" {
+  description = "Map that can be used to populate S3 bucket replication configuration rule block"
   value = {
     status = var.enabled == true ? "Enabled" : "Disabled"
     prefix = var.source_bucket_prefix
     destinations = [
       for destination_bucket_name, storage_class in var.destination_bucket_names: {
-        bucket = destination_bucket_name
-        storage_class = storage_class
+          bucket = destination_bucket_name
+          storage_class = storage_class
         }
     ]
   }
