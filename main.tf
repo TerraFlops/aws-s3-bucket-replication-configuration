@@ -87,3 +87,18 @@ data "aws_iam_policy_document" "replication_destination_bucket_policy" {
     ]
   }
 }
+
+# If a role name is supplied, create IAM role for replication
+resource "aws_iam_role" "source_iam_role" {
+  count = var.source_iam_role_name == null ? 0 : 1
+  name = var.source_iam_role_name
+  assume_role_policy = data.aws_iam_policy_document.replication_source_iam_role_assume_policy
+}
+
+# If a role was created, attach the policy to it
+resource "aws_iam_role_policy" "source_iam_role" {
+  count = var.source_iam_role_name == null ? 0 : 1
+  name = "${var.source_iam_role_name}S3ReplicationPolicy"
+  policy = data.aws_iam_policy_document.replication_source_iam_role_policy.json
+  role = aws_iam_role.source_iam_role[0].name
+}
