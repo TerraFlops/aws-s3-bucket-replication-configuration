@@ -9,17 +9,17 @@ variable "enabled" {
   default = true
 }
 
-variable "source_aws_account_id" {
+variable "aws_account_id" {
   type = string
   description = "The AWS account ID where the source bucket is located"
 }
 
-variable "source_bucket_name" {
+variable "bucket_name" {
   type = string
   description = "The replication source bucket name"
 }
 
-variable "source_bucket_prefix" {
+variable "bucket_prefix" {
   type = string
   description = "Optional prefix for source bucket replication"
   default = ""

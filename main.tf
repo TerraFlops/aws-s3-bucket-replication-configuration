@@ -1,11 +1,11 @@
 locals {
-  source_s3_service_root_arn = "arn:aws:iam::${var.source_aws_account_id}:root"
-  source_bucket_arn = "arn:aws:s3:::${var.source_bucket_name}"
+  s3_service_root_arn = "arn:aws:iam::${var.aws_account_id}:root"
+  bucket_arn = "arn:aws:s3:::${var.bucket_name}"
   destination_bucket_arns = toset([for destination in var.destinations: "arn:aws:s3:::${destination["bucket_name"]}"])
 }
 
 # Create policy document allowing S3 service to assume the IAM role
-data "aws_iam_policy_document" "source_iam_role_assume_policy" {
+data "aws_iam_policy_document" "iam_role_assume_policy" {
   version = "2012-10-17"
   statement {
     effect = "Allow"
@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "source_iam_role_assume_policy" {
   }
 }
 
-data "aws_iam_policy_document" "source_iam_role_policy" {
+data "aws_iam_policy_document" "iam_role_policy" {
   version = "2012-10-17"
   statement {
     effect = "Allow"
@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "source_iam_role_policy" {
       "s3:ListBucket"
     ]
     resources = [
-      local.source_bucket_arn
+      local.bucket_arn
     ]
   }
   statement {
@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "source_iam_role_policy" {
       "s3:GetObjectVersionTagging"
     ]
     resources = [
-      "${local.source_bucket_arn}/*"
+      "${local.bucket_arn}/*"
     ]
   }
   statement {
@@ -52,7 +52,7 @@ data "aws_iam_policy_document" "source_iam_role_policy" {
       "s3:ReplicateTags"
     ]
     resources = [
-      "${local.source_bucket_arn}/*"
+      "${local.bucket_arn}/*"
     ]
   }
 }
@@ -63,7 +63,7 @@ data "aws_iam_policy_document" "destination_bucket_policy" {
     effect = "Allow"
     principals {
       identifiers = [
-        local.source_s3_service_root_arn
+        local.s3_service_root_arn
       ]
       type = "AWS"
     }
@@ -79,7 +79,7 @@ data "aws_iam_policy_document" "destination_bucket_policy" {
     effect = "Allow"
     principals {
       identifiers = [
-        local.source_s3_service_root_arn
+        local.s3_service_root_arn
       ]
       type = "AWS"
     }
@@ -93,14 +93,14 @@ data "aws_iam_policy_document" "destination_bucket_policy" {
 }
 
 # If a role name is supplied, create IAM role for replication
-resource "aws_iam_role" "source_iam_role" {
+resource "aws_iam_role" "iam_role" {
   name = "${var.name}Role"
-  assume_role_policy = data.aws_iam_policy_document.source_iam_role_assume_policy.json
+  assume_role_policy = data.aws_iam_policy_document.iam_role_assume_policy.json
 }
 
 # If a role was created, attach the policy to it
-resource "aws_iam_role_policy" "source_iam_role" {
+resource "aws_iam_role_policy" "iam_role" {
   name = "${var.name}Policy"
-  policy = data.aws_iam_policy_document.source_iam_role_policy.json
-  role = aws_iam_role.source_iam_role.name
+  policy = data.aws_iam_policy_document.iam_role_policy.json
+  role = aws_iam_role.iam_role.name
 }
