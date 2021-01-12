@@ -3,18 +3,23 @@ output "name" {
   value = var.name
 }
 
-output "rule" {
-  description = "Map that can be used to populate S3 bucket replication configuration rule block"
-  value = {
-    status = var.enabled == true ? "Enabled" : "Disabled"
-    prefix = var.source_bucket_prefix
-    destinations = [
+output "rules" {
+  description = "Map that can be used to populate S3 bucket replication configuration rule blocks"
+  value = [
+    for priority, rule in [
       for destination_bucket_name, storage_class in var.destination_bucket_names: {
+        status = var.enabled == true ? "Enabled" : "Disabled"
+        prefix = var.source_bucket_prefix
+        destination = {
           bucket = destination_bucket_name
           storage_class = storage_class
         }
-    ]
-  }
+      }
+    ]: merge(rule, {
+      id = "${var.name}${priority}"
+      priority = priority
+    })
+  ]
 }
 
 output "source_iam_role_assume_policy" {
