@@ -1,5 +1,5 @@
-output "rules" {
-  description = "Map that can be used to populate S3 bucket replication configuration rules block"
+output "destinations" {
+  description = "Map that can be used to populate S3 bucket replication configuration destinations block"
   value = {
     status = var.enabled == true ? "Enabled" : "Disabled"
     prefix = var.source_bucket_prefix
