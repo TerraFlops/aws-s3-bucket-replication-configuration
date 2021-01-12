@@ -25,6 +25,11 @@ variable "source_bucket_prefix" {
   default = ""
 }
 
+variable "destination_aws_account_id" {
+  type = string
+  description = "The AWS account ID where the destination bucket is located"
+}
+
 variable "destination_bucket_names" {
   type = map(string)
   description = "Map of destination bucket names and the storage class that will be applied to replicated files"

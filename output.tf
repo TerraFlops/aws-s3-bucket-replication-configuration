@@ -11,8 +11,12 @@ output "rules" {
         status = var.enabled == true ? "Enabled" : "Disabled"
         prefix = var.source_bucket_prefix
         destination = {
+          account_id = var.destination_aws_account_id
           bucket = "arn:aws:s3:::${destination_bucket_name}"
           storage_class = storage_class
+          access_control_translation = {
+            owner = "Destination"
+          }
         }
       }
     ]): merge(rule, {
@@ -47,6 +51,11 @@ output "source_bucket_prefix" {
   value = var.source_bucket_prefix
 }
 
+output "source_aws_account_id" {
+  description = "The AWS account ID where the source bucket is located"
+  value = var.source_aws_account_id
+}
+
 output "destination_bucket_policy" {
   description = "The replication policy that needs to be applied to the destination bucket in the replication pair"
   value = data.aws_iam_policy_document.destination_bucket_policy.json
@@ -60,4 +69,9 @@ output "destination_bucket_iam_role_policy" {
 output "destination_bucket_arns" {
   description = "The destination S3 buckets ARNs"
   value = local.destination_bucket_arns
+}
+
+output "destination_aws_account_id" {
+  description = "The AWS account ID where the destination bucket is located"
+  value = var.destination_aws_account_id
 }
