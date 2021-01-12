@@ -6,7 +6,7 @@ output "name" {
 output "rules" {
   description = "Map that can be used to populate S3 bucket replication configuration rule blocks"
   value = [
-    for priority, rule in [
+    for priority, rule in tolist([
       for destination_bucket_name, storage_class in var.destination_bucket_names: {
         status = var.enabled == true ? "Enabled" : "Disabled"
         prefix = var.source_bucket_prefix
@@ -15,9 +15,9 @@ output "rules" {
           storage_class = storage_class
         }
       }
-    ]: merge(rule, {
-      id = "${var.name}${priority}"
-      priority = priority
+    ]): merge(rule, {
+      id = "${var.name}${tonumber(priority) + 1}"
+      priority = tonumber(priority) + 1
     })
   ]
 }
