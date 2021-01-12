@@ -3,7 +3,7 @@ variable "source_aws_account_id" {
   description = "The AWS account ID where the source bucket is located"
 }
 
-variable "c" {
+variable "source_bucket_name" {
   type = string
   description = "The replication source bucket name"
 }

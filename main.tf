@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "replication_source_assume_role_policy" {
   }
 }
 
-data "aws_iam_policy_document" "replication_source" {
+data "aws_iam_policy_document" "replication_source_iam_role" {
   version = "2012-10-17"
   statement {
     effect = "Allow"
