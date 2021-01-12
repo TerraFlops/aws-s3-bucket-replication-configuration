@@ -21,6 +21,7 @@ data "aws_iam_policy_document" "iam_role_assume_policy" {
   }
 }
 
+# Create policy for the source account replication
 data "aws_iam_policy_document" "iam_role_policy" {
   version = "2012-10-17"
   statement {
@@ -38,7 +39,8 @@ data "aws_iam_policy_document" "iam_role_policy" {
     actions = [
       "s3:GetObjectVersionForReplication",
       "s3:GetObjectVersionAcl",
-      "s3:GetObjectVersionTagging"
+      "s3:GetObjectVersionTagging",
+      "s3:ObjectOwnerOverrideToBucketOwner"
     ]
     resources = [
       "${local.bucket_arn}/*"
@@ -57,48 +59,13 @@ data "aws_iam_policy_document" "iam_role_policy" {
   }
 }
 
-data "aws_iam_policy_document" "destination_bucket_policy" {
-  version = "2012-10-17"
-  statement {
-    effect = "Allow"
-    principals {
-      identifiers = [
-        local.s3_service_root_arn
-      ]
-      type = "AWS"
-    }
-    actions = [
-      "s3:ReplicateDelete",
-      "s3:ReplicateObject"
-    ]
-    resources = toset([
-      for destination_bucket_arn in local.destination_bucket_arns: "${destination_bucket_arn}/*"
-    ])
-  }
-  statement {
-    effect = "Allow"
-    principals {
-      identifiers = [
-        local.s3_service_root_arn
-      ]
-      type = "AWS"
-    }
-    actions = [
-      "s3:List*",
-      "s3:GetBucketVersioning",
-      "s3:PutBucketVersioning"
-    ]
-    resources = local.destination_bucket_arns
-  }
-}
-
-# If a role name is supplied, create IAM role for replication
+# Create the IAM role that will be used to perform replication from the source account
 resource "aws_iam_role" "iam_role" {
   name = "${var.name}Role"
   assume_role_policy = data.aws_iam_policy_document.iam_role_assume_policy.json
 }
 
-# If a role was created, attach the policy to it
+# Attach the policy to this newly created role
 resource "aws_iam_role_policy" "iam_role" {
   name = "${var.name}Policy"
   policy = data.aws_iam_policy_document.iam_role_policy.json
