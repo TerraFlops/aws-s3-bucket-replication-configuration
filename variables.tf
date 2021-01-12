@@ -25,11 +25,6 @@ variable "source_bucket_prefix" {
   default = ""
 }
 
-variable "destination_aws_account_id" {
-  type = string
-  description = "The AWS account ID where the destination bucket is located"
-}
-
 variable "destinations" {
   type = map(object({
     aws_account_id = string
