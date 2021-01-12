@@ -11,13 +11,16 @@ replication configuration.
 module "example_replication_configuration" {
   source = "git::https://github.com/TerraFlops/aws-s3-bucket-replication-configuration?ref=v1.19"
   name = "ExampleReplication"
-  source_aws_account_id = data.aws_caller_identity.default.account_id
-  source_bucket_name = "source.bucket.example.com"
-  source_bucket_prefix = "incoming/"
-  destination_bucket_names = {
-    "first.destination.bucket.example.com" = "STANDARD",
-    "second.destination.bucket.example.com" = "STANDARD_IA"
-  }
+  aws_account_id = data.aws_caller_identity.default.account_id
+  bucket_name = "source.bucket.example.com"
+  bucket_prefix = "incoming/"
+  destinations = [
+    {
+      aws_account_id = "012345678901"
+      bucket_name = "another.bucket.example.com"
+      storage_class = "STANDARD"
+    }
+  ]
 }
 
 # Apply the configuration to an S3 bucket
@@ -40,6 +43,10 @@ resource "aws_s3_bucket" "source_example_bucket" {
         destination {
           bucket = rules.value["destination"]["bucket"]
           storage_class = rules.value["destination"]["storage_class"]
+          account_id = rules.value["destination"]["account_id"]
+          access_control_translation {
+            owner = rules.value["destination"]["access_control_translation"]["owner"]
+          }
         }
       }
     }
