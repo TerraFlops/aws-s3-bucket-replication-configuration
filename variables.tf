@@ -26,7 +26,7 @@ variable "source_bucket_prefix" {
 }
 
 variable "destinations" {
-  type = map(object({
+  type = list(object({
     aws_account_id = string
     bucket_name = string
     storage_class = string

@@ -6,23 +6,20 @@ output "name" {
 output "rules" {
   description = "Map that can be used to populate S3 bucket replication configuration rule blocks"
   value = [
-    for priority, rule in tolist([
-      for destination in var.destinations: {
-        status = var.enabled == true ? "Enabled" : "Disabled"
-        prefix = var.source_bucket_prefix
-        destination = {
-          account_id = destination["aws_account_id"]
-          bucket = "arn:aws:s3:::${destination["bucket_name"]}"
-          storage_class = destination["storage_class"]
-          access_control_translation = {
-            owner = "Destination"
-          }
+    for priority, destination in var.destinations: {
+      id = "${var.name}${tonumber(priority) + 1}"
+      status = var.enabled == true ? "Enabled" : "Disabled"
+      prefix = var.source_bucket_prefix
+      priority = tonumber(priority) + 1
+      destination = {
+        account_id = destination["aws_account_id"]
+        bucket = "arn:aws:s3:::${destination["bucket_name"]}"
+        storage_class = destination["storage_class"]
+        access_control_translation = {
+          owner = "Destination"
         }
       }
-    ]): merge(rule, {
-      id = "${var.name}${tonumber(priority) + 1}"
-      priority = tonumber(priority) + 1
-    })
+    }
   ]
 }
 
