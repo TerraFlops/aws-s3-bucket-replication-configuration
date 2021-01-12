@@ -1,17 +1,14 @@
-output "replication_configuration" {
-  description = "Map that can be used to populate S3 bucket replication configuration block"
+output "rules" {
+  description = "Map that can be used to populate S3 bucket replication configuration rules block"
   value = {
-    role = aws_iam_role.source_iam_role[0].arn
-    rules = {
-      status = var.enabled == true ? "Enabled" : "Disabled"
-      prefix = var.source_bucket_prefix
-      destinations = [
-        for destination_bucket_name, storage_class in var.destination_bucket_names: {
-          bucket = destination_bucket_name
-          storage_class = storage_class
+    status = var.enabled == true ? "Enabled" : "Disabled"
+    prefix = var.source_bucket_prefix
+    destinations = [
+      for destination_bucket_name, storage_class in var.destination_bucket_names: {
+        bucket = destination_bucket_name
+        storage_class = storage_class
         }
-      ]
-    }
+    ]
   }
 }
 
