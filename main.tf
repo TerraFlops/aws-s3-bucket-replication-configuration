@@ -96,7 +96,7 @@ data "aws_iam_policy_document" "destination_bucket_policy" {
 resource "aws_iam_role" "source_iam_role" {
   count = var.source_iam_role_name == null ? 0 : 1
   name = var.source_iam_role_name
-  assume_role_policy = data.aws_iam_policy_document.source_iam_role_assume_policy
+  assume_role_policy = data.aws_iam_policy_document.source_iam_role_assume_policy.json
 }
 
 # If a role was created, attach the policy to it
