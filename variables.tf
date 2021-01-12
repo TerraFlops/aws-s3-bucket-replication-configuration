@@ -26,12 +26,6 @@ variable "source_bucket_prefix" {
 }
 
 variable "destination_bucket_names" {
-  type = set(string)
-  description = "Set of destination bucket names to this the source will be replicated"
-}
-
-variable "destination_bucket_storage_class" {
-  type = string
-  description = "Override for destination bucket storage class, defaults to STANDARD"
-  default = "STANDARD"
+  type = map(string)
+  description = "Map of destination bucket names and the storage class that will be applied to replicated files"
 }

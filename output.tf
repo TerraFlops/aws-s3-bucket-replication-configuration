@@ -5,8 +5,12 @@ output "replication_configuration" {
     rules = {
       status = var.enabled == true ? "Enabled" : "Disabled"
       prefix = var.source_bucket_prefix
-      destinations = local.destination_bucket_arns
-      storage_class = var.destination_bucket_storage_class
+      destinations = [
+        for destination_bucket_name, storage_class in var.destination_bucket_names: {
+          bucket = destination_bucket_name
+          storage_class = storage_class
+        }
+      ]
     }
   }
 }
