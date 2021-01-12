@@ -9,7 +9,7 @@ replication configuration.
 
 ```hcl-terraform
 module "example_replication_configuration" {
-  source = "git::https://github.com/TerraFlops/aws-s3-bucket-replication-configuration?ref=v1.19"
+  source = "git::https://github.com/TerraFlops/aws-s3-bucket-replication-configuration?ref=v1.25"
   name = "ExampleReplication"
   aws_account_id = data.aws_caller_identity.default.account_id
   bucket_name = "source.bucket.example.com"
