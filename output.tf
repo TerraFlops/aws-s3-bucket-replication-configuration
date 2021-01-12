@@ -8,12 +8,27 @@ output "source_iam_role_policy" {
   value = data.aws_iam_policy_document.source_iam_role_policy.json
 }
 
+output "source_iam_role_arn" {
+  description = "If an IAM role for the replication source was created this will contain its ARN, otherwise it will be null"
+  value = var.source_iam_role_name == null ? null : aws_iam_role.source_iam_role[0].arn
+}
+
+output "source_bucket_arn" {
+  description = "The source S3 buckets ARN"
+  value = local.source_bucket_arn
+}
+
 output "destination_bucket_policy" {
   description = "The replication policy that needs to be applied to the destination bucket in the replication pair"
   value = data.aws_iam_policy_document.destination_bucket_policy.json
 }
 
-output "source_iam_role_arn" {
-  description = "If an IAM role for the replication source was created this will contain its ARN, otherwise it will be null"
-  value = var.source_iam_role_name == null ? null : aws_iam_role.source_iam_role[0].arn
+output "destination_bucket_iam_role" {
+  description = "The replication policy that needs to be applied to the destination bucket in the replication pair"
+  value = data.aws_iam_policy_document.destination_bucket_policy.json
+}
+
+output "destination_bucket_arn" {
+  description = "The destination S3 buckets ARN"
+  value = local.destination_bucket_arn
 }

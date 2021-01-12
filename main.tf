@@ -1,3 +1,9 @@
+locals {
+  source_s3_service_root_arn = "arn:aws:iam::${var.source_aws_account_id}:root"
+  source_bucket_arn = "arn:aws:s3:::${var.source_bucket_name}"
+  destination_bucket_arn = "arn:aws:s3:::${var.destination_bucket_name}"
+}
+
 # Create policy document allowing S3 service to assume the IAM role
 data "aws_iam_policy_document" "source_iam_role_assume_policy" {
   version = "2012-10-17"
@@ -24,7 +30,7 @@ data "aws_iam_policy_document" "source_iam_role_policy" {
       "s3:ListBucket"
     ]
     resources = [
-      "arn:aws:s3:::${var.source_bucket_name}"
+      local.source_bucket_arn
     ]
   }
   statement {
@@ -35,7 +41,7 @@ data "aws_iam_policy_document" "source_iam_role_policy" {
       "s3:GetObjectVersionTagging"
     ]
     resources = [
-      "arn:aws:s3:::${var.source_bucket_name}/*"
+      "${local.source_bucket_arn}/*"
     ]
   }
   statement {
@@ -46,7 +52,7 @@ data "aws_iam_policy_document" "source_iam_role_policy" {
       "s3:ReplicateTags"
     ]
     resources = [
-      "arn:aws:s3:::${var.source_bucket_name}/*"
+      "${local.source_bucket_arn}/*"
     ]
   }
 }
@@ -57,7 +63,7 @@ data "aws_iam_policy_document" "destination_bucket_policy" {
     effect = "Allow"
     principals {
       identifiers = [
-        "arn:aws:iam::${var.source_aws_account_id}:root"
+        local.source_s3_service_root_arn
       ]
       type = "AWS"
     }
@@ -66,14 +72,14 @@ data "aws_iam_policy_document" "destination_bucket_policy" {
       "s3:ReplicateObject"
     ]
     resources = [
-      "arn:aws:s3:::${var.destination_bucket_name}/*"
+      "${local.destination_bucket_arn}/*"
     ]
   }
   statement {
     effect = "Allow"
     principals {
       identifiers = [
-        "arn:aws:iam::${var.source_aws_account_id}:root"
+        local.source_s3_service_root_arn
       ]
       type = "AWS"
     }
@@ -83,7 +89,7 @@ data "aws_iam_policy_document" "destination_bucket_policy" {
       "s3:PutBucketVersioning"
     ]
     resources = [
-      "arn:aws:s3:::${var.destination_bucket_name}"
+      local.destination_bucket_arn
     ]
   }
 }
