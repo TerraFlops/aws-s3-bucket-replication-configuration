@@ -54,7 +54,7 @@ data "aws_iam_policy_document" "iam_role_policy" {
       "s3:ReplicateTags"
     ]
     resources = concat(
-      destination_bucket_arns,
+      local.destination_bucket_arns,
       [ for destination_bucket_arn in local.destination_bucket_arns: "${destination_bucket_arn}/*" ]
     )
   }
