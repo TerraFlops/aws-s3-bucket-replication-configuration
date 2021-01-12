@@ -37,10 +37,10 @@ data "aws_iam_policy_document" "iam_role_policy" {
   statement {
     effect = "Allow"
     actions = [
+      # Allow retrieval of source bucket contents for replication
       "s3:GetObjectVersionForReplication",
       "s3:GetObjectVersionAcl",
-      "s3:GetObjectVersionTagging",
-      "s3:ObjectOwnerOverrideToBucketOwner"
+      "s3:GetObjectVersionTagging"
     ]
     resources = [
       "${local.bucket_arn}/*"
@@ -49,9 +49,13 @@ data "aws_iam_policy_document" "iam_role_policy" {
   statement {
     effect = "Allow"
     actions = [
+      # Allow replication into destination bucket
       "s3:ReplicateObject",
       "s3:ReplicateDelete",
-      "s3:ReplicateTags"
+      # Allow tag replication into desetination bucket
+      "s3:ReplicateTags",
+      # Allow ownership change on destination bucket objects
+      "s3:ObjectOwnerOverrideToBucketOwner"
     ]
     resources = concat(
       tolist(local.destination_bucket_arns),
