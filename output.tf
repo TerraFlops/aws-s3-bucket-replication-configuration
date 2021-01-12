@@ -42,7 +42,7 @@ output "destination_bucket_policy" {
   value = data.aws_iam_policy_document.destination_bucket_policy.json
 }
 
-output "destination_bucket_iam_role" {
+output "destination_bucket_iam_role_policy" {
   description = "The replication policy that needs to be applied to the destination bucket in the replication pair"
   value = data.aws_iam_policy_document.destination_bucket_policy.json
 }
@@ -50,9 +50,4 @@ output "destination_bucket_iam_role" {
 output "destination_bucket_arns" {
   description = "The destination S3 buckets ARNs"
   value = local.destination_bucket_arns
-}
-
-output "destination_bucket_storage_class" {
-  description = "Override for destination bucket storage class, defaults to STANDARD"
-  value = var.destination_bucket_storage_class
 }
