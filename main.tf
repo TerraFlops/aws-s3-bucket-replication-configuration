@@ -98,7 +98,7 @@ resource "aws_iam_role" "source_iam_role" {
 # If a role was created, attach the policy to it
 resource "aws_iam_role_policy" "source_iam_role" {
   count = var.source_iam_role_name == null ? 0 : 1
-  name = "${var.source_iam_role_name}S3ReplicationPolicy"
+  name = "${var.source_iam_role_name}Policy"
   policy = data.aws_iam_policy_document.replication_source_iam_role_policy.json
   role = aws_iam_role.source_iam_role[0].name
 }
