@@ -11,7 +11,7 @@ output "rules" {
         status = var.enabled == true ? "Enabled" : "Disabled"
         prefix = var.source_bucket_prefix
         destination = {
-          bucket = destination_bucket_name
+          bucket = "arn:aws:s3:::${destination_bucket_name}"
           storage_class = storage_class
         }
       }

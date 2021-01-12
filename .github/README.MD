@@ -1,24 +1,48 @@
 # Terraflops Terraform Module
  
-### AWS S3 Bucket Replication Policy
+### AWS S3 Bucket Replication Configuration
 
-This module can be used to generate the S3 bucket/IAM role policy statements for cross-account replication
+This module can be used to create an iterable output used to define an S3 buckets
+replication configuration. 
 
 #### Example usage
 
 ```hcl-terraform
-module "s3_replication_policy" {
-  source = "git::https://github.com/TerraFlops/aws-s3-replication-policy?ref=v1.0"
-  source_aws_account_id = "0123456789"
-  source_iam_role_name = "ExampleIamRoleForSourceAccount"
+module "example_replication_configuration" {
+  source = "git::https://github.com/TerraFlops/aws-s3-bucket-replication-configuration?ref=v1.19"
+  name = "ExampleReplication"
+  source_aws_account_id = data.aws_caller_identity.default.account_id
   source_bucket_name = "source.bucket.example.com"
-  destination_bucket_name = "destination.bucket.example.com"
+  source_bucket_prefix = "incoming/"
+  destination_bucket_names = {
+    "first.destination.bucket.example.com" = "STANDARD",
+    "second.destination.bucket.example.com" = "STANDARD_IA"
+  }
+}
+
+# Apply the configuration to an S3 bucket
+
+resource "aws_s3_bucket" "source_example_bucket" {
+  bucket = "source.bucket.example.com"
+  
+  # ... Insert bucket configuration ...
+
+  # Configure bucket replication creating a rule for each destination
+  replication_configuration {
+    role = module.example_replication_configuration.source_iam_role_arn
+    dynamic "rules" {
+      for_each = module.example_replication_configuration.rules
+      content {
+        id = rules.value["id"]
+        status = rules.value["status"]
+        prefix = rules.value["prefix"]
+        priority = rules.value["priority"]
+        destination {
+          bucket = rules.value["destination"]["bucket"]
+          storage_class = rules.value["destination"]["storage_class"]
+        }
+      }
+    }
+  }
 }
 ```
-
-The following JSON statements are output from the module
-
-* source_iam_role_arn
-* source_iam_role_policy
-* source_iam_role_assume_policy
-* destination_bucket_policy
