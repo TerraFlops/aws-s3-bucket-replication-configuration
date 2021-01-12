@@ -28,7 +28,7 @@ output "destination_bucket_iam_role" {
   value = data.aws_iam_policy_document.destination_bucket_policy.json
 }
 
-output "destination_bucket_arn" {
-  description = "The destination S3 buckets ARN"
-  value = local.destination_bucket_arn
+output "destination_bucket_arns" {
+  description = "The destination S3 buckets ARNs"
+  value = local.destination_bucket_arns
 }
