@@ -1,7 +1,7 @@
 locals {
   source_s3_service_root_arn = "arn:aws:iam::${var.source_aws_account_id}:root"
   source_bucket_arn = "arn:aws:s3:::${var.source_bucket_name}"
-  destination_bucket_arn = "arn:aws:s3:::${var.destination_bucket_name}"
+  destination_bucket_arns = toset([for destination_bucket_name in var.destination_bucket_names: "arn:aws:s3:::${destination_bucket_name}"])
 }
 
 # Create policy document allowing S3 service to assume the IAM role
@@ -71,9 +71,9 @@ data "aws_iam_policy_document" "destination_bucket_policy" {
       "s3:ReplicateDelete",
       "s3:ReplicateObject"
     ]
-    resources = [
-      "${local.destination_bucket_arn}/*"
-    ]
+    resources = toset([
+      for destination_bucket_arn in local.destination_bucket_arns: "${destination_bucket_arn}/*"
+    ])
   }
   statement {
     effect = "Allow"
@@ -88,9 +88,7 @@ data "aws_iam_policy_document" "destination_bucket_policy" {
       "s3:GetBucketVersioning",
       "s3:PutBucketVersioning"
     ]
-    resources = [
-      local.destination_bucket_arn
-    ]
+    resources = local.destination_bucket_arns
   }
 }
 

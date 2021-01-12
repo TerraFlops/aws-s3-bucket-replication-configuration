@@ -14,7 +14,7 @@ variable "source_bucket_name" {
   description = "The replication source bucket name"
 }
 
-variable "destination_bucket_name" {
-  type = string
-  description = "The replication destination bucket name"
+variable "destination_bucket_names" {
+  type = set(string)
+  description = "Set of destination bucket names to this the source will be replicated"
 }
