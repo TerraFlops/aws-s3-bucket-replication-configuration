@@ -30,7 +30,11 @@ variable "destination_aws_account_id" {
   description = "The AWS account ID where the destination bucket is located"
 }
 
-variable "destination_bucket_names" {
-  type = map(string)
-  description = "Map of destination bucket names and the storage class that will be applied to replicated files"
+variable "destinations" {
+  type = map(object({
+    aws_account_id = string
+    bucket_name = string
+    storage_class = string
+  }))
+  description = "Map of destination bucket configurations"
 }

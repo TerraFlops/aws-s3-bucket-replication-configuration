@@ -7,13 +7,13 @@ output "rules" {
   description = "Map that can be used to populate S3 bucket replication configuration rule blocks"
   value = [
     for priority, rule in tolist([
-      for destination_bucket_name, storage_class in var.destination_bucket_names: {
+      for destination in var.destinations: {
         status = var.enabled == true ? "Enabled" : "Disabled"
         prefix = var.source_bucket_prefix
         destination = {
-          account_id = var.destination_aws_account_id
-          bucket = "arn:aws:s3:::${destination_bucket_name}"
-          storage_class = storage_class
+          account_id = destination["aws_account_id"]
+          bucket = "arn:aws:s3:::${destination["bucket_name"]}"
+          storage_class = destination["storage_class"]
           access_control_translation = {
             owner = "Destination"
           }
