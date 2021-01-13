@@ -1,5 +1,4 @@
 locals {
-  s3_service_root_arn = "arn:aws:iam::${var.aws_account_id}:root"
   bucket_arn = "arn:aws:s3:::${var.bucket_name}"
   destination_bucket_arns = toset([for destination in var.destinations: "arn:aws:s3:::${destination["bucket_name"]}"])
 }
@@ -43,6 +42,7 @@ data "aws_iam_policy_document" "iam_role_policy" {
       "s3:GetObjectVersionTagging"
     ]
     resources = [
+      # Source bucket
       "${local.bucket_arn}/*"
     ]
   }
@@ -58,6 +58,7 @@ data "aws_iam_policy_document" "iam_role_policy" {
       "s3:ObjectOwnerOverrideToBucketOwner"
     ]
     resources = concat(
+      # Destination buckets
       tolist(local.destination_bucket_arns),
       tolist([ for destination_bucket_arn in local.destination_bucket_arns: "${destination_bucket_arn}/*" ])
     )

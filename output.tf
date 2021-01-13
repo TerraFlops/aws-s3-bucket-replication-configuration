@@ -50,3 +50,8 @@ output "aws_account_id" {
   description = "The AWS account ID where the source bucket is located"
   value = var.aws_account_id
 }
+
+output "destination_bucket_arns" {
+  value = local.destination_bucket_arns
+}
+
