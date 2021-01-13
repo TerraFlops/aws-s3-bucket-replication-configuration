@@ -10,7 +10,7 @@ output "rules" {
       id = "${var.name}${tonumber(priority) + 1}"
       status = var.enabled == true ? "Enabled" : "Disabled"
       prefix = var.bucket_prefix
-      priority = tonumber(priority)
+      priority = length(var.destinations) > 1 ? tonumber(priority) + 1 : 0
       destination = {
         account_id = destination["aws_account_id"]
         bucket = "arn:aws:s3:::${destination["bucket_name"]}"
